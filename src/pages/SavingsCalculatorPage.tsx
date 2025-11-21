@@ -10,8 +10,27 @@ import {
   Tab,
   TextField,
 } from 'tosslib';
-
+import { getSavingProducts, SavingsProduct } from '../api.ts';
+import { useEffect, useState } from 'react';
 export function SavingsCalculatorPage() {
+  const [products, setProducts] = useState<SavingsProduct[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // 2. 분리해둔 API 함수 호출!
+        const data = await getSavingProducts();
+        setProducts(data); // 받아온 데이터를 state에 저장
+        console.log('데이터 로딩 성공:', data);
+        console.log(products);
+      } catch (error) {
+        console.error('에러 발생:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
   return (
     <>
       <NavigationBar title="적금 계산기" />
