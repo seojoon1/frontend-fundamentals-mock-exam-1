@@ -2,7 +2,7 @@ import {
   Assets,
   Border,
   colors,
-  ListHeader,
+  // ListHeader,
   ListRow,
   NavigationBar,
   SelectBottomSheet,
@@ -14,6 +14,9 @@ import { getSavingProducts, SavingsProduct } from '../api.ts';
 import { useEffect, useState } from 'react';
 export function SavingsCalculatorPage() {
   const [products, setProducts] = useState<SavingsProduct[]>([]);
+  const [targetAmount, setTargetAmount] = useState<number | null>(null);
+  const [monthlyAmount, setMonthlyAmount] = useState<number | null>(null);
+  const [term, setTerm] = useState<number>(12)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,11 +40,19 @@ export function SavingsCalculatorPage() {
 
       <Spacing size={16} />
 
-      <TextField label="목표 금액" placeholder="목표 금액을 입력하세요" suffix="원" />
+      <TextField label="목표 금액" placeholder="목표 금액을 입력하세요" suffix="원" onChange={(e)=>{
+        setTargetAmount(Number(e.target.value));
+        console.log(targetAmount);
+      }}/>
       <Spacing size={16} />
-      <TextField label="월 납입액" placeholder="희망 월 납입액을 입력하세요" suffix="원" />
+      <TextField label="월 납입액" placeholder="희망 월 납입액을 입력하세요" suffix="원" onChange={(e)=>{
+        setMonthlyAmount(Number(e.target.value));
+        console.log(monthlyAmount);
+      }}/>
       <Spacing size={16} />
-      <SelectBottomSheet label="저축 기간" title="저축 기간을 선택해주세요" value={12} onChange={() => {}}>
+      <SelectBottomSheet label="저축 기간" title="저축 기간을 선택해주세요" value={term} onChange={(SelectValue) => { 
+        setTerm(SelectValue);
+      }}>
         <SelectBottomSheet.Option value={6}>6개월</SelectBottomSheet.Option>
         <SelectBottomSheet.Option value={12}>12개월</SelectBottomSheet.Option>
         <SelectBottomSheet.Option value={24}>24개월</SelectBottomSheet.Option>
@@ -75,7 +86,7 @@ export function SavingsCalculatorPage() {
         right={<Assets.Icon name="icon-check-circle-green" />}
         onClick={() => {}}
       />
-      <ListRow
+      {/* <ListRow
         contents={
           <ListRow.Texts
             type="3RowTypeA"
@@ -88,7 +99,7 @@ export function SavingsCalculatorPage() {
           />
         }
         onClick={() => {}}
-      />
+      /> */}
 
       {/* 아래는 계산 결과 탭 내용이에요. 계산 결과 탭을 구현할 때 주석을 해제해주세요. */}
       {/* <Spacing size={8} />
