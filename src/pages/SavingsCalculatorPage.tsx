@@ -17,6 +17,7 @@ export function SavingsCalculatorPage() {
   const [targetAmount, setTargetAmount] = useState<number | null>(null);
   const [monthlyAmount, setMonthlyAmount] = useState<number | null>(null);
   const [term, setTerm] = useState<number>(12)
+  const [select, setSelect] = useState<string | null>("")
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -74,7 +75,8 @@ export function SavingsCalculatorPage() {
       {products
         .filter((product) => product.minMonthlyAmount <= monthlyAmount! && product.maxMonthlyAmount >= monthlyAmount! && product.availableTerms === term)
         .map((product) => (
-          <ListRow
+          <ListRow 
+            key={product.id}
             contents={
               <ListRow.Texts
                 type="3RowTypeA"
@@ -82,29 +84,20 @@ export function SavingsCalculatorPage() {
                 topProps={{ fontSize: 16, fontWeight: 'bold', color: colors.grey900 }}
                 middle={`연 이자율: ${product.annualRate}%`}
                 middleProps={{ fontSize: 14, color: colors.blue600, fontWeight: 'medium' }}
-                bottom={`${product.minMonthlyAmount}원~${product.maxMonthlyAmount}원 | ${product.availableTerms}개월`}
+                bottom={`${product.minMonthlyAmount.toLocaleString()}원~${product.maxMonthlyAmount.toLocaleString()}원 | ${product.availableTerms}개월`}
                 bottomProps={{ fontSize: 13, color: colors.grey600 }}
               />
             }
-            right={<Assets.Icon name="icon-check-circle-green" />}
-            onClick={() => {}}
+            right={select === product.id ? <Assets.Icon name="icon-check-circle-green" />: <></>}
+            onClick={() => {
+              if (select === product.id){
+                setSelect("");
+              }else{
+                setSelect(product.id);
+              }
+            }}
         />
         ))}
-      {/* <ListRow
-        contents={
-          <ListRow.Texts
-            type="3RowTypeA"
-            top={'고급 정기적금'}
-            topProps={{ fontSize: 16, fontWeight: 'bold', color: colors.grey900 }}
-            middle={'연 이자율: 2.8%'}
-            middleProps={{ fontSize: 14, color: colors.blue600, fontWeight: 'medium' }}
-            bottom={'50,000원 ~ 1,000,000원 | 24개월'}
-            bottomProps={{ fontSize: 13, color: colors.grey600 }}
-          />
-        }
-        onClick={() => {}}
-      /> */}
-
       {/* 아래는 계산 결과 탭 내용이에요. 계산 결과 탭을 구현할 때 주석을 해제해주세요. */}
       {/* <Spacing size={8} />
 
