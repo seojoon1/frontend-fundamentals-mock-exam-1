@@ -57,3 +57,18 @@ export const getTopProducts = (
     .sort((a, b) => b.annualRate - a.annualRate)
     .slice(0, limit);
 };
+export const filterAvailableProducts = (
+  products: SavingsProduct[],
+  monthlyAmount: number | null,
+  term: number
+): SavingsProduct[] => {
+  const amount = monthlyAmount ?? 0;
+
+  return products.filter((product) => {
+    return (
+      product.minMonthlyAmount <= amount &&
+      product.maxMonthlyAmount >= amount &&
+      product.availableTerms === term
+    );
+  });
+};  

@@ -18,6 +18,7 @@ import {
   calculateDifference,
   calculateRecommendedMonthly,
   getTopProducts,
+  filterAvailableProducts
 } from '../utils/savingUtils.ts';
 import { ResultList } from '../components/ResultList.tsx';
 export function SavingsCalculatorPage() {
@@ -55,15 +56,10 @@ const recommendedMonthlyAmount = useMemo(() => {
   return calculateRecommendedMonthly(targetAmount, term, annualRate);
 },[term, annualRate])
 
-const filteredProducts = useMemo(() =>{
+const filteredProducts = useMemo(() => {
+    return filterAvailableProducts(products, monthlyAmount, term);
+  }, [products, monthlyAmount, term]);
 
-  return  products.filter(
-    (product) =>
-      product.minMonthlyAmount <= (monthlyAmount ?? 0) &&
-      product.maxMonthlyAmount >= (monthlyAmount ?? 0) &&
-      product.availableTerms === term
-  );
-},[monthlyAmount, term])
 const top2Products = useMemo(() => {
   return getTopProducts(filteredProducts, 2);
 }, [filteredProducts]);
