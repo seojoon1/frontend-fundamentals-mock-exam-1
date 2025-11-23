@@ -12,7 +12,13 @@ import {
 } from 'tosslib';
 import { getSavingProducts, SavingsProduct } from '../api.ts';
 import { useEffect, useState, useMemo } from 'react';
-import { ProductList } from '../components/productList.tsx';
+import { ProductList } from '../components/ProductList.tsx';
+import {
+  calculateExpectedReturn,
+  calculateDifference,
+  calculateRecommendedMonthly,
+  getTopProducts,
+} from '../utils/savingUtils.ts';
 export function SavingsCalculatorPage() {
   const [products, setProducts] = useState<SavingsProduct[]>([]);
   const [targetAmount, setTargetAmount] = useState<number | null>(null);
@@ -37,29 +43,19 @@ export function SavingsCalculatorPage() {
   }, []);
 
   const expectedReturn = useMemo(() => {
-  if (!monthlyAmount || !term) return 0;
-  
-  const rate = Number(annualRate); 
-  const monthly = Number(monthlyAmount);
-
-
-  return Math.floor(monthly * term * (1 + rate * 0.5));
+  return calculateExpectedReturn(monthlyAmount, term, annualRate);
 }, [monthlyAmount, term, annualRate]);
 
 const difference = useMemo(() => {
-  if (!targetAmount) return 0;
-    return targetAmount - expectedReturn;
+  return calculateDifference(targetAmount, expectedReturn);
 }, [targetAmount, expectedReturn]);
 
 const recommendedMonthlyAmount = useMemo(() => {
-  if (!targetAmount) return 0;
-  return Math.floor(targetAmount / (term * (1 + annualRate * 0.5)));
-},[monthlyAmount, term, annualRate])
+  return calculateRecommendedMonthly(targetAmount, term, annualRate);
+},[term, annualRate])
 
 const top2Products = useMemo(() => {
-  return [...products]
-    .sort((a, b) => b.annualRate - a.annualRate) // 이자율 높은 순
-    .slice(0, 2); // 2개만 자르기
+  return getTopProducts(products, 2);
 }, [products]);
 const filteredProducts = products.filter(
     (product) =>
