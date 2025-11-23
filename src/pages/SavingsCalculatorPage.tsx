@@ -55,15 +55,18 @@ const recommendedMonthlyAmount = useMemo(() => {
   return calculateRecommendedMonthly(targetAmount, term, annualRate);
 },[term, annualRate])
 
-const top2Products = useMemo(() => {
-  return getTopProducts(products, 2);
-}, [products]);
-const filteredProducts = products.filter(
+const filteredProducts = useMemo(() =>{
+
+  return  products.filter(
     (product) =>
       product.minMonthlyAmount <= (monthlyAmount ?? 0) &&
       product.maxMonthlyAmount >= (monthlyAmount ?? 0) &&
       product.availableTerms === term
   );
+},[monthlyAmount, term])
+const top2Products = useMemo(() => {
+  return getTopProducts(filteredProducts, 2);
+}, [filteredProducts]);
 
 const handleProductSelect = (product: SavingsProduct) => {
     if (select === product.id) {
@@ -88,7 +91,7 @@ const handleProductSelect = (product: SavingsProduct) => {
       <Spacing size={16} />
       <TextField label="월 납입액" placeholder="희망 월 납입액을 입력하세요" suffix="원" onChange={(e)=>{
         setMonthlyAmount(Number(e.target.value));
-        console.log(monthlyAmount);
+        console.log(monthlyAmount); 
       }}/>
       <Spacing size={16} />
       <SelectBottomSheet label="저축 기간" title="저축 기간을 선택해주세요" value={term} onChange={(SelectValue) => { 
